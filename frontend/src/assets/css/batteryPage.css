@@ -1,0 +1,67 @@
+.battery-dashboard {
+  position: relative;
+}
+
+/* Info Cards Styling */
+.info-card {
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  min-width: 160px;
+  min-height: 50px;
+  text-align: center;
+  font-size: 130%;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+  transform: scale(1.05);
+}
+
+.card-avg-temp { background-color: #f76c6c !important; }
+.card-avg-volt { background-color: #6c5ce7 !important; }
+.card-max-alt  { background-color: #00b894 !important; }
+.card-humidity { background-color: #00cec9 !important; }
+.card-timestamp { background-color: #0984e3 !important; }
+
+/* Floating Latest Box */
+.floating-latest-box {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 220px;
+  font-size: 110%;
+}
+
+/* Pulse Animation */
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(9, 132, 227, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); }
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .info-card {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+    min-width: 120px;
+  }
+
+  .floating-latest-box {
+    font-size: 0.75rem;
+    width: 180px;
+    right: 10px;
+  }
+}

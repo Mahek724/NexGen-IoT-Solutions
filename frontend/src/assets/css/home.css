@@ -50,7 +50,7 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  height: 100%; /* Ensures full height alignment */
+  height: 100% !important; 
 }
 
 
@@ -59,9 +59,9 @@
 }
 
 .project-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
+  width: 100% !important;
+  height: 250px !important;
+  object-fit: cover !important;
 }
 
 .project-content {
@@ -69,21 +69,23 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 1rem;
+  font-size: 20px !important;
   flex-grow: 1;
+  
 }
 
 
 .project-title {
-  font-size: 1.25rem;
+  font-size: 30px !important;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #333;
 }
 
 .project-summary {
-  font-size: 0.95rem;
+  font-size: 20px !important;
   color: #666;
-  flex-grow: 1; /* Pushes button down */
+  flex-grow: 1; 
 }
 
 
