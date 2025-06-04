@@ -2,11 +2,13 @@
   width: 100%;
   background-color: #11AEAE;
   color: white;
-  text-align: center;
   padding: 14px 0;
   position: relative;
   bottom: 0;
-  font-size: 23px !important;
+  font-size: 20px;
   font-weight: 500;
   box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+  height: 52px;
+    text-align: center;
+
 }

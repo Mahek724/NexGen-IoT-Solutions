@@ -7,6 +7,8 @@ import * as XLSX from 'xlsx';
 import '../assets/css/batteryPage.css';
 
 const BatteryPage = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
   const [data, setData] = useState([]);
   const [selectedMetric, setSelectedMetric] = useState('temperature');
   const [latest, setLatest] = useState(null);
@@ -14,7 +16,9 @@ const BatteryPage = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 20;
   const metrics = ['temperature', 'voltage', 'pressure', 'humidity'];
-
+useEffect(() => {
+  document.body.classList.toggle("dark-mode", darkMode);
+}, [darkMode]);
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 5000);
@@ -55,23 +59,43 @@ const BatteryPage = () => {
   );
 
   const paginatedData = sortedData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+
+  const renderPageButtons = () => {
+    const maxVisible = 5;
+    let pages = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 || i === totalPages ||
+        (i >= page - 1 && i <= page + 1)
+      ) {
+        pages.push(i);
+      } else if (
+        (i === page - 2 && i > 1) ||
+        (i === page + 2 && i < totalPages)
+      ) {
+        pages.push('...');
+      }
+    }
+
+    return pages.filter((v, i, a) => i === 0 || v !== a[i - 1]).map((p, i) =>
+      p === '...' ? (
+        <span key={i} className="pagination-ellipsis">...</span>
+      ) : (
+        <button key={i}
+          className={`btn btn-sm ${p === page ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+          onClick={() => setPage(p)}>{p}
+        </button>
+      )
+    );
+  };
 
   return (
     <div className="container-fluid px-4 py-4 battery-dashboard">
-      <h2 className="text-center mb-4">🔋 Battery Project Dashboard</h2>
+      <h2 className="text-center mb-4 glow-text">🔋 Battery Project Dashboard</h2>
 
-      {/* Floating Latest Info */}
-      <div className="floating-latest-box animate-pulse">
-        <h6><i className="bi bi-clock-history"></i> Latest Reading</h6>
-        <p>📅 {latest?.timestamp?.slice(0, 19).replace('T', ' ')}</p>
-        <p>🌡 Temp: {latest?.temperature} °C</p>
-        <p>⚡ Volt: {latest?.voltage} V</p>
-        <p>💧 Humidity: {latest?.humidity} %</p>
-        <p>🗻 Alt: {latest?.altitude} m</p>
-      </div>
-
-      {/* Overview Cards */}
-      <div className="d-flex flex-wrap justify-content-center gap-3 mb-4">
+      <div className="card-row">
         <div className="info-card card-avg-temp">🌡️ Avg Temp: {avg(data, 'temperature')} °C</div>
         <div className="info-card card-avg-volt">⚡ Avg Volt: {avg(data, 'voltage')} V</div>
         <div className="info-card card-max-alt">🗻 Max Alt: {max(data, 'altitude')} m</div>
@@ -79,7 +103,6 @@ const BatteryPage = () => {
         <div className="info-card card-timestamp">⏱️ Latest: {latest?.timestamp?.slice(0, 19).replace('T', ' ') || '--'}</div>
       </div>
 
-      {/* Chart Tabs */}
       <div className="d-flex justify-content-center mb-3 flex-wrap">
         {metrics.map(metric => (
           <button key={metric}
@@ -90,29 +113,39 @@ const BatteryPage = () => {
         ))}
       </div>
 
-      {/* Line Chart */}
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" tickFormatter={t => t.slice(11, 16)} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey={selectedMetric} stroke="#007bff" activeDot={{ r: 6 }} />
-        </LineChart>
-      </ResponsiveContainer>
+      <div className="graph-and-card">
+        <div className="graph-container">
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="timestamp" tickFormatter={t => t.slice(11, 16)} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey={selectedMetric} stroke="#007bff" activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* Controls */}
+        <div className="floating-latest-box animate-pulse">
+          <h6><i className="bi bi-clock-history"></i> Latest Reading</h6>
+          <p>📅 {latest?.timestamp?.slice(0, 19).replace('T', ' ')}</p>
+          <p>🌡 Temp: {latest?.temperature} °C</p>
+          <p>⚡ Volt: {latest?.voltage} V</p>
+          <p>💧 Humidity: {latest?.humidity} %</p>
+          <p>🗻 Alt: {latest?.altitude} m</p>
+        </div>
+      </div>
+
       <div className="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
         <input type="text" className="form-control w-auto" placeholder="Search..."
           value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         <button className="btn btn-success" onClick={exportToExcel}>📤 Export CSV/Excel</button>
       </div>
-
-      {/* Table */}
+       
       <div className="table-responsive">
-        <table className="table table-bordered table-hover table-sm text-center">
-          <thead className="table-dark">
+        <table className="custom-table">
+          <thead>
             <tr>
               <th>Timestamp</th><th>Temperature (°C)</th><th>Humidity (%)</th>
               <th>Pressure (hPa)</th><th>Gas (kΩ)</th><th>Altitude (m)</th><th>Voltage (V)</th>
@@ -134,12 +167,8 @@ const BatteryPage = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="d-flex justify-content-center mt-2 flex-wrap">
-        {Array.from({ length: Math.ceil(sortedData.length / itemsPerPage) }, (_, i) => (
-          <button key={i + 1} className={`btn btn-sm mx-1 ${page === i + 1 ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setPage(i + 1)}>{i + 1}</button>
-        ))}
+      <div className="d-flex justify-content-center mt-3 flex-wrap pagination-container">
+        {renderPageButtons()}
       </div>
     </div>
   );
