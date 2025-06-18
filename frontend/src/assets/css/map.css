@@ -1,0 +1,66 @@
+.map-background {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #222;
+}
+
+.map-img {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0.75;
+  z-index: 1;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.tower-marker {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 56px;
+  transition: transform 0.2s;
+}
+
+.tower-marker:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.tower-icon {
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.tower-bar {
+  width: 20px;
+  height: 7px;
+  background: #eee;
+  border-radius: 5px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  border: 1px solid #aaa;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 100%;
+}
+.bar-green {
+  background: #17c618;
+}
+.bar-red {
+  background: #e63946;
+}
+
+.tower-label {
+  color: #fff;
+  font-size: 0.82rem;
+  text-shadow: 1px 1px 3px #000;
+  margin-top: 2px;
+}

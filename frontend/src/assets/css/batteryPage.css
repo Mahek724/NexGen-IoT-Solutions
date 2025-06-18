@@ -154,7 +154,7 @@ body, table {
 
 .custom-table thead {
   background-color: #343a40;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .custom-table tbody tr:nth-child(odd) {

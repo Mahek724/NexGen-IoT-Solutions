@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const batteryDataSchema = new mongoose.Schema({
+  towerId: Number,
   timestamp: Date,
   temperature: Number,
   humidity: Number,

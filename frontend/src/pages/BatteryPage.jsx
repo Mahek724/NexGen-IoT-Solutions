@@ -4,44 +4,54 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import * as XLSX from 'xlsx';
+import { useParams } from 'react-router-dom';
 import '../assets/css/batteryPage.css';
 
 const BatteryPage = () => {
+  const { towerId } = useParams(); // get tower number from url
   const [darkMode, setDarkMode] = useState(false);
-
   const [data, setData] = useState([]);
   const [selectedMetric, setSelectedMetric] = useState('temperature');
   const [latest, setLatest] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const itemsPerPage = 20;
+
   const metrics = ['temperature', 'voltage', 'pressure', 'humidity'];
-useEffect(() => {
-  document.body.classList.toggle("dark-mode", darkMode);
-}, [darkMode]);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", darkMode);
+  }, [darkMode]);
+
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(fetchData, 10000);
     const switchInterval = setInterval(() => {
       setSelectedMetric((prev) => {
         const idx = metrics.indexOf(prev);
         return metrics[(idx + 1) % metrics.length];
       });
-    }, 5000);
+    }, 10000);
     return () => {
       clearInterval(interval);
       clearInterval(switchInterval);
     };
-  }, []);
+    // Only rerun when towerId changes
+    // eslint-disable-next-line
+  }, [towerId]);
 
   const fetchData = async () => {
-    const res = await axios.get('http://localhost:5000/api/battery-data');
+    // Fetch data for the correct tower only!
+    const res = await axios.get(`http://localhost:5000/api/battery-data?towerId=${towerId}`);
+    console.log("Fetched data:", res.data); 
     setData(res.data);
     setLatest(res.data[res.data.length - 1]);
   };
 
-  const avg = (arr, field) => (arr.reduce((sum, item) => sum + item[field], 0) / arr.length).toFixed(2);
-  const max = (arr, field) => Math.max(...arr.map(item => item[field]));
+  const avg = (arr, field) =>
+    arr.length > 0 ? (arr.reduce((sum, item) => sum + (item[field] || 0), 0) / arr.length).toFixed(2) : '0.00';
+
+  const max = (arr, field) => arr.length > 0 ? Math.max(...arr.map(item => item[field] || 0)) : 0;
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -64,7 +74,6 @@ useEffect(() => {
   const renderPageButtons = () => {
     const maxVisible = 5;
     let pages = [];
-
     for (let i = 1; i <= totalPages; i++) {
       if (
         i === 1 || i === totalPages ||
@@ -78,7 +87,6 @@ useEffect(() => {
         pages.push('...');
       }
     }
-
     return pages.filter((v, i, a) => i === 0 || v !== a[i - 1]).map((p, i) =>
       p === '...' ? (
         <span key={i} className="pagination-ellipsis">...</span>
@@ -93,16 +101,16 @@ useEffect(() => {
 
   return (
     <div className="container-fluid px-4 py-4 battery-dashboard">
-      <h2 className="text-center mb-4 glow-text">🔋 Battery Project Dashboard</h2>
-
+      <h2 className="text-center mb-4 glow-text">
+        {towerId ? `🔋 Battery Dashboard Tower-${towerId}` : "🔋 Battery Dashboard"}
+      </h2>
       <div className="card-row">
-        <div className="info-card card-avg-temp">🌡️ Avg Temp: {avg(data, 'temperature')} °C</div>
+        <div className="info-card card-avg-temp">🌡 Avg Temp: {avg(data, 'temperature')} °C</div>
         <div className="info-card card-avg-volt">⚡ Avg Volt: {avg(data, 'voltage')} V</div>
         <div className="info-card card-max-alt">🗻 Max Alt: {max(data, 'altitude')} m</div>
         <div className="info-card card-humidity">💧 Humidity: {latest?.humidity || '--'} %</div>
-        <div className="info-card card-timestamp">⏱️ Latest: {latest?.timestamp?.slice(0, 19).replace('T', ' ') || '--'}</div>
+        <div className="info-card card-timestamp">⏱ Latest: {latest?.timestamp?.slice(0, 19).replace('T', ' ') || '--'}</div>
       </div>
-
       <div className="d-flex justify-content-center mb-3 flex-wrap">
         {metrics.map(metric => (
           <button key={metric}
@@ -112,21 +120,29 @@ useEffect(() => {
           </button>
         ))}
       </div>
-
       <div className="graph-and-card">
         <div className="graph-container">
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+            <LineChart
+              data={data.filter((_, i) => i % 5 === 0)}
+              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" tickFormatter={t => t.slice(11, 16)} />
+              <XAxis dataKey="timestamp" tickFormatter={(t) => t?.slice(11, 16)} />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey={selectedMetric} stroke="#007bff" activeDot={{ r: 6 }} />
+              <Line
+                type="monotone"
+                dataKey={selectedMetric}
+                stroke="#007bff"
+                strokeWidth={2}
+                dot={{ r: 4, fill: 'white', stroke: '#007bff', strokeWidth: 2 }}
+                activeDot={{ r: 6 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
-
         <div className="floating-latest-box animate-pulse">
           <h6><i className="bi bi-clock-history"></i> Latest Reading</h6>
           <p>📅 {latest?.timestamp?.slice(0, 19).replace('T', ' ')}</p>
@@ -136,13 +152,11 @@ useEffect(() => {
           <p>🗻 Alt: {latest?.altitude} m</p>
         </div>
       </div>
-
       <div className="d-flex justify-content-between align-items-center my-3 flex-wrap gap-2">
         <input type="text" className="form-control w-auto" placeholder="Search..."
           value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         <button className="btn btn-success" onClick={exportToExcel}>📤 Export CSV/Excel</button>
       </div>
-       
       <div className="table-responsive">
         <table className="custom-table">
           <thead>
@@ -166,7 +180,6 @@ useEffect(() => {
           </tbody>
         </table>
       </div>
-
       <div className="d-flex justify-content-center mt-3 flex-wrap pagination-container">
         {renderPageButtons()}
       </div>
