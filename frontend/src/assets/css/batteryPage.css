@@ -4,6 +4,31 @@ body, table {
   color: #212529;
 }
 
+.metric-btn-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.metric-btn {
+  border-radius: 10px;
+  padding: 7px 22px;
+  font-size: 1rem;
+  transition: all 0.14s;
+  outline: none;
+  box-shadow: none;
+  border-width: 1.5px !important;
+  margin: 0 0.2rem;
+}
+.metric-btn.active,
+.metric-btn:hover,
+.metric-btn:focus {
+  color: #161414 !important;
+  filter: brightness(0.95) !important;
+}
+
 .battery-dashboard {
   position: relative;
   animation: fadeIn 0.8s ease-in-out;
@@ -70,6 +95,16 @@ body, table {
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
+.alert-box {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 14px 18px;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+
 .info-card .icon {
   font-size: 1.5rem;
   margin-bottom: 0.3rem;
@@ -77,7 +112,7 @@ body, table {
 }
 
 /* Color Codes */
-.card-avg-temp    { background-color: #d63031; }
+.card-avg-temp    { background-color: #fa7b7b; }
 .card-avg-volt    { background-color: #6c5ce7; }
 .card-max-alt     { background-color: #00b894; }
 .card-humidity    { background-color: #00cec9; }
@@ -110,7 +145,6 @@ body, table {
   }
 }
 
-
 @media (max-width: 768px) {
   .info-card {
     font-size: 0.9rem;
@@ -128,10 +162,10 @@ body, table {
     font-size: 1.4rem;
   }
   body {
-  background-color: #f4f4f4;
-  color: #212529;
-  transition: background 0.3s, color 0.3s;
-}
+    background-color: #f4f4f4;
+    color: #212529;
+    transition: background 0.3s, color 0.3s;
+  }
 }
 
 /* table css */
@@ -154,7 +188,7 @@ body, table {
 
 .custom-table thead {
   background-color: #343a40;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 252, 252);
 }
 
 .custom-table tbody tr:nth-child(odd) {
@@ -170,3 +204,73 @@ body, table {
   transition: all 0.2s ease;
   cursor: pointer;
 }
+
+.custom-table tbody tr.uncertain {
+  background-color: #ffb3b3 !important;
+  color: #900;
+  font-weight: bold;
+}
+
+.battery-icon-wrapper.vertical {
+  width: 28px;
+  height: 30px;
+  border-radius: 6px;
+  margin-right: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  background: #fff;
+}
+
+.battery-icon-wrapper.vertical::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: -8px;
+  width: 14px;
+  height: 7px;
+  background: #333;
+  border-radius: 2px 2px 2px 2px;
+}
+
+.battery-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 2px 2px 4px 4px;
+  transition: height 0.3s, background-color 0.3s;
+  z-index: 2;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.uncertain-cell {
+  background-color: #ffb3b3 !important;
+  color: #900;
+  font-weight: bold;
+}
+
+.battery-icon {
+  width: 20px;
+  height: 100%;
+  border: 2px solid #333;
+  border-radius: 4px;
+  background: #eee;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.battery-text {
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  color: #000;
+}
+

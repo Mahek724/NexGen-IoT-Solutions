@@ -25,9 +25,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/project/:id" element={<ProjectPage />} />
-        {/* Battery Map Page */}
         <Route path="/project/battery" element={<MapPage />} />
-        {/* Battery Dashboard for each tower */}
         <Route path="/project/battery/tower/:towerId" element={<BatteryPage />} />
 
         <Route path="/project/solar" element={<SolarPage />} />

@@ -1,88 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import '../assets/css/solarPage.css';
-import {
-  LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../assets/css/solarPage.css";
 
 const SolarPage = () => {
-  const [temperatureData, setTemperatureData] = useState([]);
-  const [dailySampleData, setDailySampleData] = useState([]);
-  const [marchSampleData, setMarchSampleData] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/solar');
-        setTemperatureData(res.data.temperature || []);
-        setDailySampleData(res.data.dailySample || []);
-        setMarchSampleData(res.data.marchSample || []);
-      } catch (error) {
-        console.error('❌ Error fetching data:', error);
-      }
-    };
-    fetchData();
+    axios.get("/api/solar")
+      .then((res) => setData(res.data))
+      .catch((err) => console.error("Fetch error:", err));
   }, []);
+const [currentPage, setCurrentPage] = useState(1);
+const rowsPerPage = 10;
 
-  const renderTable = (title, data) => (
-    <div className="table-container">
-      <h2>{title}</h2>
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              {data.length > 0 && Object.keys(data[0]).map((key, index) => (
-                <th key={index}>{key}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, idx) => (
-              <tr key={idx}>
-                {Object.values(row).map((val, i) => (
-                  <td key={i}>{String(val)}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+const indexOfLastRow = currentPage * rowsPerPage;
+const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+const totalPages = Math.ceil(data.length / rowsPerPage);
 
-  const renderLineChart = (title, data, xKey, yKeys) => (
-    <div className="chart-section">
-      <h2>{title}</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid stroke="#ccc" />
-          <XAxis dataKey={xKey} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {yKeys.map((key, index) => (
-            <Line key={index} type="monotone" dataKey={key} stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`} />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
+  const average = (key) => {
+    const validValues = data.map(row => parseFloat(row[key])).filter(v => !isNaN(v));
+    const sum = validValues.reduce((a, b) => a + b, 0);
+    return (sum / validValues.length).toFixed(2);
+  };
 
   return (
-    <div className="solar-dashboard">
-      <h1 className="main-heading">🌞 Solar Data Dashboard</h1>
+    <div className="solar-container">
+      <h1>🔆 Solar Dashboard</h1>
 
-      {/* Daily Sample */}
-      {renderLineChart('Daily Sample – EacToday vs Time', dailySampleData, 'Time', ['EacToday(kWh)', 'INVTemp(℃)', 'AMTemp1(℃)'])}
-      {renderTable('Daily Sample Data', dailySampleData)}
+      <div className="solar-avg">
+        <p><strong>Avg EacToday:</strong> {average("EacToday(kWh)")} kWh</p>
+        <p><strong>Avg Pac:</strong> {average("Pac(W)")} W</p>
+        <p><strong>Avg INV Temp:</strong> {average("INVTemp(℃)")} ℃</p>
+      </div>
 
-      {/* Temperature */}
-      {renderLineChart('Temperature – EacToday vs AMTemp1', temperatureData, 'AMTemp1(℃)', ['EacToday(kWh)'])}
-      {renderTable('Temperature Data', temperatureData)}
+      <table className="solar-table">
+        <thead>
+          <tr>
+            <th>Serial</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>EacToday</th>
+            <th>Pac(W)</th>
+            <th>INVTemp(℃)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentRows.map((row, idx) => (
 
-      {/* March Sample */}
-      {renderLineChart('March Sample – EacToday, Pac(W), INVTemp(℃)', marchSampleData, 'Time', ['EacToday(kWh)', 'Pac(W)', 'INVTemp(℃)'])}
-      {renderTable('March Sample Data', marchSampleData)}
+            <tr key={idx}>
+              <td>{row["Serial number"]}</td>
+              <td>{row["Time"]}</td>
+              <td>{row["Status"]}</td>
+              <td>{row["EacToday(kWh)"]}</td>
+              <td>{row["Pac(W)"]}</td>
+              <td>{row["INVTemp(℃)"]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+            <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={currentPage === i + 1 ? "active" : ""}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+
     </div>
   );
 };

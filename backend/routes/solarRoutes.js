@@ -1,29 +1,14 @@
 const express = require('express');
 const router = express.Router();
-
-// Import 3 Mongoose models (one for each CSV)
-const temperatureData = require('../models/TemperatureData');
-const DailySampleData = require('../models/DailySampleData');
-const MarchSampleData = require('../models/MarchSampleData');
+const SolarData = require('../models/SolarData');
 
 router.get('/', async (req, res) => {
   try {
-    const [temperature, dailySample, marchSample] = await Promise.all([
-      temperatureData.find(), 
-      DailySampleData.find(), 
-      MarchSampleData.find()  
-    ]);
-
-    res.json({
-      temperature,
-      dailySample,
-      marchSample
-    });
+    const data = await SolarData.find().sort({ Time: -1 });
+    res.json(data);
   } catch (err) {
-    console.error('❌ Error fetching solar data:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 module.exports = router;

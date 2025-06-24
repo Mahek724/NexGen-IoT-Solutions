@@ -1,48 +1,47 @@
-.solar-dashboard {
-  padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #fdfdfd;
-  color: #222;
+.solar-container {
+  padding: 20px;
+  font-family: sans-serif;
 }
 
-.main-heading {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #f59e0b;
+.solar-avg {
+  margin-bottom: 20px;
+  background: #f0f9f0;
+  padding: 15px;
+  border-radius: 8px;
 }
 
-.table-container {
-  margin: 2rem 0;
-}
-
-.table-container h2 {
-  margin-bottom: 1rem;
-  color: #2563eb;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-table {
+.solar-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 0 8px rgba(0,0,0,0.05);
 }
 
-th, td {
-  padding: 0.75rem 1rem;
+.solar-table th,
+.solar-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
   text-align: center;
-  border: 1px solid #ddd;
 }
 
-th {
-  background-color: #f3f4f6;
-  font-weight: 600;
+.solar-table th {
+  background-color: #e0f7e0;
 }
 
-.chart-section {
-  margin: 3rem 0;
+.pagination {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  margin: 2px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination .active {
+  background: #007BFF;
+  color: white;
+  font-weight: bold;
 }
