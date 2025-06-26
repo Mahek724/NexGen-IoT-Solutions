@@ -111,7 +111,6 @@ body, table {
   display: block;
 }
 
-/* Color Codes */
 .card-avg-temp    { background-color: #fa7b7b; }
 .card-avg-volt    { background-color: #6c5ce7; }
 .card-max-alt     { background-color: #00b894; }
@@ -138,7 +137,6 @@ body, table {
   font-weight: bold;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .info-card {
     flex: 1 1 45%;
@@ -168,7 +166,6 @@ body, table {
   }
 }
 
-/* table css */
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -198,7 +195,6 @@ body, table {
   background-color: #e9ecef;
 }
 
-/* Hover Effect */
 .custom-table tbody tr:hover {
   background-color: #cde3f7 !important;
   transition: all 0.2s ease;

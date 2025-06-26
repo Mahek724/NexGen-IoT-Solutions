@@ -74,10 +74,18 @@ const BatteryPage = () => {
 
 
   const fetchData = async () => {
-    const res = await axios.get(`http://localhost:5000/api/battery-data?towerId=${towerId}`);
+  try {
+    const towerParam = towerId.replace('tower-', '').replace('Tower-', '').replace('Tower', '').trim();
+    const res = await axios.get(`http://localhost:5000/api/battery-data?towerId=${towerParam}`);
     setData(res.data);
     setLatest(res.data[res.data.length - 1]);
-  };
+  } catch (err) {
+    console.error("Error fetching tower data", err);
+    setData([]);
+    setLatest(null);
+  }
+};
+
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);

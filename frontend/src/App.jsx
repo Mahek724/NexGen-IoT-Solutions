@@ -9,6 +9,7 @@ import SolarPage from './pages/SolarPage';
 import RoboticsPage from './pages/RoboticsPage';
 import HEMMPage from './pages/HEMMPage';
 import Footer from './components/Footer';
+import '../src/App.css';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -18,7 +19,7 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div>
+    <div className={darkMode ? "dark-mode" : "light-mode"}>
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <div className="container mt-4"></div>
       <Routes>

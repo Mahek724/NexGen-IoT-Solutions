@@ -64,3 +64,52 @@
   text-shadow: 1px 1px 3px #000;
   margin-top: 2px;
 }
+
+.svg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; 
+  z-index: 1;
+}
+
+line {
+  filter: drop-shadow(0px 0px 2px rgb(250, 250, 253));
+}
+
+.radius-popup {
+  position: absolute;
+  top: -45px;
+  left: 60%;
+  transform: translateX(-50%) scale(0.8);
+  background: rgba(255, 255, 255, 0.85);
+  color: #222;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.radius-popup.radius-visible,
+.tower-marker:hover .radius-popup {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.selection-box {
+  position: absolute;
+  border: 2px dashed #00f;
+  background-color: rgba(0, 0, 255, 0.1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+
