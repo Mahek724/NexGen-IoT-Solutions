@@ -2,13 +2,16 @@
   width: 100%;
   background-color: #11AEAE;
   color: white;
-  padding: 14px 0;
-  position: relative;
-  bottom: 0;
-  font-size: 20px;
+  padding: 8px 0;
+  font-size: 18px;
   font-weight: 500;
+  text-align: center;
   box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-  height: 52px;
-    text-align: center;
+}
 
+@media (max-width: 768px) {
+  .footer {
+    font-size: 18px;
+    padding: 6px 0;
+  }
 }

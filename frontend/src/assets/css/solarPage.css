@@ -13,6 +13,12 @@
 .solar-table {
   width: 100%;
   border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+}
+
+.solar-table table {
+  min-width: 600px;
 }
 
 .solar-table th,
@@ -29,6 +35,10 @@
 .pagination {
   margin-top: 15px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .pagination button {

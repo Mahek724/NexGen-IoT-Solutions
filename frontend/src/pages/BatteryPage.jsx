@@ -277,7 +277,7 @@ const BatteryPage = () => {
         <button className="btn btn-success" onClick={exportToExcel}>📤 Export CSV/Excel</button>
       </div>
 
-      <div className="table-responsive">
+      <div className="table-wrapper">
         <table className="custom-table">
           <thead>
             <tr>

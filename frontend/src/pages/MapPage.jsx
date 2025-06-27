@@ -114,12 +114,8 @@ const MapPage = () => {
   }
 }}
       
-  onMouseUp={() => {
-  if (!dragStart || !dragEnd) {
-    setIsDragging(false);
-    return;
-  }
-}}
+  onMouseUp={handleMouseUp}
+
  >
       <img src={mapImg} alt="Mine Map" className="map-img" />
       {dragStart && dragEnd && (
@@ -197,9 +193,11 @@ const MapPage = () => {
           className={`tower-marker ${isSelected ? 'show-radius' : ''}`}
           style={{ top: tower.top, left: tower.left }}
           onClick={(e) => {
-            if (isDragging || dragStart || dragEnd) return;
+            if (isDragging) return;
+            console.log(`Navigating to Tower-${tower.id}`);
             navigate(`/project/battery/tower/${tower.id}`);
           }}
+
           onMouseEnter={() => setHoveredTower(tower)}
           onMouseLeave={() => setHoveredTower(null)}
         >
